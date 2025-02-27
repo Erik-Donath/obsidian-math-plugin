@@ -12,7 +12,16 @@ export default class MathPlugin extends Plugin {
 		}
 
 		// Load preample
-		const preamble = "\\newcommand{\\Vec}[3]{\\mathbf{\\begin{pmatrix} #1 \\\\ #2 \\\\ #3 \\end{pmatrix}}}";
+		const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'] as const;
+		const preamble = letters.map((letter, index) => {
+			const dimension = index + 1;
+			const placeholders = Array(dimension)
+			  .fill(0)
+			  .map((_, i) => `#${i + 1}`)
+			  .join(' \\\\ ');
+			return `\\newcommand{\\Vec${letter}}[${dimension}]{\\mathbf{\\begin{pmatrix} ${placeholders} \\end{pmatrix}}}`;
+		}).join(' ');
+
 		if (MathJax.tex2chtml == undefined) {
 			MathJax.startup.ready = () => {
 				MathJax.startup.defaultReady();
